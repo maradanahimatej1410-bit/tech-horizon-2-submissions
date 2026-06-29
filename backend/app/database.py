@@ -14,8 +14,14 @@ if DATABASE_URL.startswith("sqlite"):
         connect_args={"check_same_thread": False}
     )
 else:
+    # Force SQLAlchemy to use psycopg v3
+    db_url = DATABASE_URL.replace(
+        "postgresql://",
+        "postgresql+psycopg://"
+    )
+
     engine = create_engine(
-        DATABASE_URL,
+        db_url,
         pool_pre_ping=True,
         pool_size=10,
         max_overflow=20
